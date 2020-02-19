@@ -1,4 +1,6 @@
-version: "3"
+version: "2"
+
+
 
 services:
 
@@ -29,6 +31,15 @@ services:
       - POSTGRES_DB=curency_exchange
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+#    web:
+#      build: .
+#      command: python /src/manage.py runserver 0.0.0.0:8000
+#      volumes:
+#        - .:/src
+#      ports:
+#        - 8000:8000
+#      depends_on:
 
 volumes:
   pgdata: {}
