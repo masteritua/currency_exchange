@@ -1,12 +1,18 @@
 CURR_USD, CURR_EUR = range(1, 3)
 
 CURRENCY_CHOICES = (
-	(1, "USD"),
-	(2, "EUR")
+	(CURR_USD, 'USD'),
+	(CURR_EUR, 'EUR'),
 )
 
 SR_PRIVAT, SR_MONO = range(1, 3)
 SOURCE_CHOICES = (
-	(1, "PrivatBank"),
-	(2, "Monobank")
+	(SR_PRIVAT, 'PrivatBank'),
+	(SR_MONO, 'MonoBank'),
+)
+
+ISO_STANDART = (
+	(840, 'USD'),
+	(978, 'EUR'),
+	(980, 'UAH'),
 )
