@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',  # new
+    'currency'
 
 ]
 
@@ -119,6 +120,14 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+CELERY_BEAT_SCHEDULE = {
+    'parse-rates': {
+        'task': 'currency.tasks.parse_rates',
+        'schedule': crontab(minute='*/1')
+    }
+}
+
 
 try:
     from main.settings_local import *  # noqa
