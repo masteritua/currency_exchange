@@ -65,7 +65,7 @@ def _privat():
 			#     'EUR': mch.CURR_EUR,
 			# }[rate['ccy']]
 
-			save_db(currency, Decimal(rate['buy']), Decimal(rate['sale']), mch.SR_PRIVAT)
+			save_db(currency, rate['buy'], rate['sale'], mch.SR_PRIVAT)
 
 
 def _aval():
