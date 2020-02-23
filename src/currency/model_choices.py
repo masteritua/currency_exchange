@@ -9,6 +9,9 @@ SR_PRIVAT, SR_MONO = range(1, 3)
 SOURCE_CHOICES = (
 	(SR_PRIVAT, 'PrivatBank'),
 	(SR_MONO, 'MonoBank'),
+	(SR_OSHADBANK, 'Ощадбанк'),
+	(SR_ALFA, 'Альфа-банк'),
+	(SR_AVAL, 'Аваль'),
 )
 
 ISO_STANDART = (

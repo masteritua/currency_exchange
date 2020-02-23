@@ -1,9 +1,54 @@
 from decimal import Decimal
 
 import requests
+from bs4 import BeautifulSoup
 from celery import shared_task
 from currency import model_choices as mch
 from currency.models import Rate
+
+
+def save_db(currency, buy, sell, bank):
+	rate_kwargs = {
+		'currency': currency,
+		'buy': Decimal(buy),
+		'sale': Decimal(sell),
+		'source': bank,
+	}
+
+	# Rate.objects.create(**rate_kwargs)
+	new_rate = Rate(**rate_kwargs)
+	last_rate = Rate.objects.filter(currency=currency, source=bank).last()
+
+	# from pdb import set_trace
+	# set_trace()
+
+	# if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
+	if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
+		new_rate.save()
+
+
+def _alfa():
+	url = 'https://alfabank.ua/'
+	page = requests.get(url)
+	soup = BeautifulSoup(page.content)
+	film_list = soup.find('div', {'class': 'currency-tab-block'})
+	items = film_list.find_all('div', {'class': 'currency-block'})
+
+	buy = []
+	sell = []
+
+	for item in items:
+		rate = item.findAll('div', {'class': 'rate'})
+		buy_block = rate[0]
+		rate_number_buy = buy_block.find('span', {'class': 'rate-number'})
+		buy.append(rate_number_buy.text)
+
+		sell_block = rate[1]
+		rate_number_sell = sell_block.find('span', {'class': 'rate-number'})
+		sell.append(rate_number_sell.text)
+
+	save_db(currency, buy[0], buy[1], mch.SR_ALFA)
+	save_db(currency, sell[0], sell[1], mch.SR_ALFA)
 
 
 def _privat():
@@ -19,24 +64,49 @@ def _privat():
 			#     'USD': mch.CURR_USD,
 			#     'EUR': mch.CURR_EUR,
 			# }[rate['ccy']]
-			rate_kwargs = {
-				'currency': currency,
-				'buy': Decimal(rate['buy']),
-				'sale': Decimal(rate['sale']),
-				'source': mch.SR_PRIVAT,
-			}
-			# Rate.objects.create(**rate_kwargs)
-			new_rate = Rate(**rate_kwargs)
-			last_rate = Rate.objects.filter(currency=currency, source=mch.SR_PRIVAT).last()
 
-			# from pdb import set_trace
-			# set_trace()
+			save_db(currency, Decimal(rate['buy']), Decimal(rate['sale']), mch.SR_PRIVAT)
 
-			# if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-			if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-				new_rate.save()
 
-			# print(Rate.objects.filter(currency=currency, source=mch.SR_PRIVAT).query)
+def _aval():
+	url = 'https://ex.aval.ua/ru/personal/everyday/exchange/'
+	page = requests.get(url)
+
+	soup = BeautifulSoup(page.content)
+	film_list = soup.find('table', {'class': 'body-currency'})
+	items = film_list.find_all('tr')
+	for item in items:
+
+		td = item.findAll('td')
+		if bool(td) is True:
+			currency_text = td[0].text
+
+			currency = 'EUR'
+			if (currency_text == "Доллары США"):
+				currency = 'USD'
+
+			buy = td[1].text
+			sell = td[2].text
+
+			save_db(currency, buy, sell, mch.SR_AVAL)
+
+
+def _oshadbank():
+	url = 'https://www.oschadbank.ua/ua/private/currency'
+	page = requests.get(url)
+
+	soup = BeautifulSoup(page.content)
+	film_list = soup.find('table', {'class': 'table'})
+	items = film_list.find_all('tr')
+	for item in items:
+
+		td = item.findAll('td')
+		if bool(td) is True:
+			currency = td[0].text
+			buy = td[5].text
+			sell = td[6].text
+
+			save_db(currency, buy, sell, mch.SR_OSHADBANK)
 
 
 def _mono():
@@ -55,26 +125,13 @@ def _mono():
 
 			currency = currency[cur]
 
-			rate_kwargs = {
-				'currency': currency,
-				'buy': Decimal(rate['rateBuy']),
-				'sale': Decimal(rate['rateSell']),
-				'source': mch.SR_MONO,
-			}
-
-			# Rate.objects.create(**rate_kwargs)
-			new_rate = Rate(**rate_kwargs)
-			last_rate = Rate.objects.filter(currency=currency, source=mch.SR_PRIVAT).last()
-
-			# from pdb import set_trace
-			# set_trace()
-
-			# if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-			if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-				new_rate.save()
+			save_db(currency, Decimal(rate['rateBuy']), Decimal(rate['rateSell']), mch.SR_MONO)
 
 
 @shared_task()
 def parse_rates():
 	_privat()
 	_mono()
+	_oshadbank()
+	_alfa()
+	_aval()
