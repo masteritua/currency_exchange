@@ -1,7 +1,9 @@
 amqp==2.5.2
 asgiref==3.2.3
 backcall==0.1.0
+beautifulsoup4==4.8.2
 billiard==3.6.2.0
+bs4==0.0.1
 celery==4.4.0
 certifi==2019.11.28
 cffi==1.14.0
@@ -23,6 +25,7 @@ ipython==7.12.0
 ipython-genutils==0.2.0
 jedi==0.16.0
 kombu==4.6.7
+lxml==4.5.0
 mccabe==0.6.1
 parso==0.6.1
 pexpect==4.8.0
@@ -41,6 +44,7 @@ pytz==2019.3
 rabbitmq==0.2.0
 requests==2.23.0
 six==1.14.0
+soupsieve==2.0
 sqlparse==0.3.0
 traitlets==4.3.3
 urllib3==1.25.8
