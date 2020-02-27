@@ -26,17 +26,13 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=123456qwerty
-      - POSTGRES_USER=ce
-      - POSTGRES_DB=curency_exchange
+    env_file:
+      - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   web:
     build: .
-    command: python src/manage.py migrate --noinput
-    command: python src/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
@@ -47,7 +43,6 @@ services:
 
   celery:
     build: .
-    command: celery -A proj worker -l info
     volumes:
       - .:/code
     depends_on:
