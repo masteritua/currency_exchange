@@ -141,3 +141,9 @@ def parse_rates():
   _oshadbank()
   _alfa()
   _aval()
+
+
+@shared_task()
+def feedback_task(form):
+  form.save()
+

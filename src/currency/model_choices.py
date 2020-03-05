@@ -5,7 +5,8 @@ CURRENCY_CHOICES = (
 	(CURR_EUR, 'EUR'),
 )
 
-SR_PRIVAT, SR_MONO = range(1, 3)
+SR_PRIVAT, SR_MONO, SR_OSHADBANK, SR_ALFA, SR_AVAL = range(1, 6)
+
 SOURCE_CHOICES = (
 	(SR_PRIVAT, 'PrivatBank'),
 	(SR_MONO, 'MonoBank'),
