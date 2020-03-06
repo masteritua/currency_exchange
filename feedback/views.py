@@ -3,27 +3,16 @@ from django.shortcuts import render
 from .models import ContactModel
 from django.views.generic import CreateView
 from currency.tasks import feedback_task
-from django.urls import reverse
+from django.urls import reverse_lazy
 
 
 class FeedbackCreateView(CreateView):
-    model = ContactModel
+    template_name = 'feedback_form.html'
+    queryset = ContactModel.objects.all()
     fields = ('email', 'title', 'text')
+    success_url = reverse_lazy('/')
 
-    success_url = "/"
-
-
-def feedback_views(request):
-    if request.method == 'POST':
-
-        form = ContactModel(request.POST)
-        if form.is_valid():
-            form.save();
-            feedback_task.delay(request.POST)
-
-            return HttpResponseRedirect(reverse('feedback'))
-
-    else:
-        form = ContactModel(initial=request.POST)
-
-    return render(request, 'feedback.html', context={"form": form})
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        feedback_task.delay(self.object.all())
+        return response

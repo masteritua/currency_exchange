@@ -10,9 +10,12 @@ def save_to_file(text):
         myfile.write(text)
 
 
-def email(subject, message):
+def email(subject, message, recipient_list=None):
     email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['masteritua@gmail.com']
+
+    if not recipient_list:
+        recipient_list = ['masteritua@gmail.com']
+
 
     try:
         send_mail(
