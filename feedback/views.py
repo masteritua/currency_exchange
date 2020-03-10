@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from .models import ContactModel
+from .models import Contact
 from django.views.generic import CreateView
 from currency.tasks import feedback_task
 from django.urls import reverse_lazy
@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 
 class FeedbackCreateView(CreateView):
     template_name = 'feedback_form.html'
-    queryset = ContactModel.objects.all()
+    queryset = Contact.objects.all()
     fields = ('email', 'title', 'text')
     success_url = reverse_lazy('/')
 
