@@ -145,5 +145,4 @@ def parse_rates():
 
 @shared_task()
 def feedback_task(post):
-    email(f"Сообщение",
-          f"{post.get('first_name')} {post.get('last_name')} {post.get('email')}")
+    email(post.get('title'), post.get('text'), [post.get('email')])
