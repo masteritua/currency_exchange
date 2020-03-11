@@ -5,8 +5,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('account.urls')),  # new
-    path('account/', include('django.contrib.auth.urls')),
+    path('account/', include('account.urls'), name='account'),
     path('currency/', include('currency.urls')),
     path('feedback/', include('feedback.urls')),
     path('', TemplateView.as_view(template_name='home.html'), name='home')
