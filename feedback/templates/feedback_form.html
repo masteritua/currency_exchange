@@ -4,7 +4,7 @@
 
 {% block content %}
   <h2>Feedback</h2>
-  <form action="{% feedback_create %}" method="post">
+  <form action="{{ feedback_create }}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Отправить</button>
