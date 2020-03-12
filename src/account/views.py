@@ -1,14 +1,21 @@
 # accounts/views.py
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, ListView
 from .models import User, Contact
+from currency.models import Rate
 
 class MyProfile(UpdateView):
     template_name = 'my_profile.html'
     queryset = User.objects.filter(is_active=True)
     fields = ('email', )
     success_url = reverse_lazy('home')
+
+
+class LatestRates(ListView):
+    template_name = 'latest_rates.html'
+    queryset = Rate.objects.all().order_by('-id')[:20][::1]
+    fields = ('currency', 'buy', 'sale', 'source', 'created')
 
 
 class ContactUs(CreateView):

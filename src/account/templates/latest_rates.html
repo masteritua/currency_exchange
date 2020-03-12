@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Latest Rates {% endblock title %}
+
+{% block content %}
+
+<h1>Latest Rates</h1>
+
+{% if object_list %}
+
+<table class="table table-sm">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Currency</th>
+        <th scope="col">Buy</th>
+        <th scope="col">Sale</th>
+        <th scope="col">Source</th>
+        <th scope="col">created</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for rate in object_list %}
+
+    <tr>
+        <th scope="row">{{ rate.id }}</th>
+        <td>{{ rate.currency }}</td>
+        <td>{{ rate.buy }}</td>
+        <td>{{ rate.sale }}</td>
+        <td>{{ rate.source }}</td>
+        <td>{{ rate.created }}</td>
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% else %}
+<p>There are no rates.</p>
+{% endif %}
+
+
+{% endblock content %}
