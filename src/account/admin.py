@@ -1,18 +1,17 @@
 from django.contrib import admin
 import os.path
 from account.models import User
+from django.db.models.signals import pre_save
+
+@receiver(pre_save, sender=User)
+def pre_profile(sender, instance, **kwargs):
+    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+    path = f'{PROJECT_ROOT}/media/avatar/{obj.get("avatar")}'
+    for file in os.scandir(path):
+        os.unlink(file.path)
 
 
 class UserAdmin(admin.ModelAdmin):
     fields = ['email', 'username', 'is_active', 'avatar']
-
-    def after_saving_model_and_related_inlines(self, obj):
-
-        PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-        path =  f'{PROJECT_ROOT}/media/avatar/{obj.get("avatar")}'
-        if os.path.isfile(path):
-            os.remove(path)
-
-        return obj
 
 admin.site.register(User, UserAdmin)
