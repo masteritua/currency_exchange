@@ -6,7 +6,7 @@ from django.db.models.signals import pre_save
 @receiver(pre_save, sender=User)
 def pre_profile(sender, instance, **kwargs):
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-    path = f'{PROJECT_ROOT}/media/avatar/{obj.get("avatar")}'
+    path = f'{PROJECT_ROOT}/media/avatar/'
     for file in os.scandir(path):
         os.unlink(file.path)
 
