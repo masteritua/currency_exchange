@@ -1,10 +1,30 @@
+
 from decimal import Decimal, ROUND_HALF_DOWN
-from common.functions import email
-import requests
 from bs4 import BeautifulSoup
 from celery import shared_task
+from common.functions import email
 from currency import model_choices as mch
 from currency.models import Rate
+
+
+def save_db_date(currency, buy, sell, bank, date=None):
+  buy_dec = Decimal(buy)
+  buy = buy_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+
+  sell_dec = Decimal(sell)
+  sell = sell_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+
+  rate_kwargs = {
+    'currency': currency,
+    'buy': buy,
+    'sale': sell,
+    'source': bank,
+    'created': date,
+  }
+
+  new_rate = Rate(**rate_kwargs)
+  new_rate.save()
+
 
 
 def save_db(currency, buy, sell, bank):

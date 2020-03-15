@@ -7,3 +7,4 @@ from django.http import HttpResponse
 def test(self):
 
 	return HttpResponse("Тестовая запись")
+
