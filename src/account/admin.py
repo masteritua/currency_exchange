@@ -2,6 +2,7 @@ from django.contrib import admin
 import os.path
 from account.models import User
 from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 @receiver(pre_save, sender=User)
 def pre_profile(sender, instance, **kwargs):
