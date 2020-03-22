@@ -11,3 +11,15 @@ class Rate(models.Model):
 
 	def __str__(self):
 		return f'{self.created} {self.get_currency_display()} {self.buy} {self.sale}'
+
+
+class WorkUaDetails(models.Model):
+	salary = models.TextField()
+	company = models.TextField()
+	address = models.TextField()
+	rules = models.TextField()
+	description = models.TextField()
+
+
+	def __str__(self):
+		return f'{self.created} {self.get_currency_display()} {self.buy} {self.sale}'

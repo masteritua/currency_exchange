@@ -1,5 +1,5 @@
 from user_agent import generate_user_agent
-from utils import random_sleep, save_info
+from utils import random_sleep, save_info, save_db,save_json
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,10 +8,39 @@ from bs4 import BeautifulSoup
 HOST = 'https://www.work.ua'
 ROOT_PATH = '/ru/jobs/'
 
+def page_into(href, headers):
+
+    response = requests.get(HOST + href, params={}, headers=headers)
+    response.raise_for_status()
+    html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
+    container = soup.find('div', class_="card wordwrap")
+    data={}
+
+    for el_p in container.find_all('p'):
+
+
+        if el_p.select('span[title="Зарплата"]'):
+            data['celery'] = el_p.b.text
+
+        if el_p.select('span[title="Данные о компании"]'):
+            data['company']=el_p.b.text
+
+        if el_p.select('span[title="Адрес работы"]'):
+            data['address']=el_p.text
+
+        if el_p.select('span[title="Условия и требования"]'):
+            data['rules']=el_p.text
+
+    data['descriptin']=soup.select('div[id="job-description"]')
+
+    return data
+
 
 def main():
     page = 0
 
+    data_json ={}
     while True:
         page += 1
 
@@ -52,11 +81,18 @@ def main():
             tag_a = card.find('h2').find('a')
             title = tag_a.text
             href = tag_a['href']
+
+            # Парсинг внутренней страницы
+            page_into_var=page_into(href, headers)
+            save_db(page_into_var)
+            data_json.append(page_into_var)
+
             result.append([title, href])
             # get vacancy full info
 
         save_info(result)
 
+    save_json(data_json)
 
 if __name__ == "__main__":
     main()
