@@ -120,6 +120,7 @@ LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
+
 CELERY_BEAT_SCHEDULE = {
     'parse-rates': {
         'task': 'currency.tasks.parse_rates',
@@ -127,6 +128,22 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*/1'),
     }
 }
+
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': f'{os.environ["MEMCACHED_HOST"]}:{os.environ["MEMCACHED_PORT"]}',
+#     }
+# }
+
+# CELERY_BROKER_URL = 'amqp://{}:{}@{}:{}//'.format(
+#     os.environ['RABBITMQ_DEFAULT_USER'],
+#     # os.environ['RABBITMQ_DEFAULT_PASS'],
+#     'guest',
+#     os.environ['RABBITMQ_DEFAULT_HOST'],
+#     os.environ['RABBITMQ_DEFAULT_PORT'],
+# )
 
 
 try:

@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import test
+from currency import views
+
+app_name = 'currency'
 
 urlpatterns = [
-    path('test', test, name='currency_test'),
+    path('download/rates/', views.RateCSV.as_view(), name='download-rates'),
+    path('test', views.test, name='currency_test'),
 ]

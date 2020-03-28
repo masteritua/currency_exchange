@@ -1,9 +1,10 @@
 # accounts/views.py
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, CreateView, ListView
-from .models import User, Contact
+from django.views.generic import UpdateView, CreateView, ListView, View
+from .models import User, Contact, ActivationCode
 from currency.models import Rate
+from account.forms import SignUpForm
 
 class MyProfile(UpdateView):
     template_name = 'my_profile.html'
@@ -31,7 +32,27 @@ class ContactUs(CreateView):
         return response
 
 
-class SignUp(CreateView):
-	form_class = UserCreationForm
-	success_url = reverse_lazy('login')
-	template_name = 'signup.html'
+class SignUpView(CreateView):
+    template_name = 'signup.html'
+    queryset = User.objects.all()
+    success_url = reverse_lazy('index')
+    form_class = SignUpForm
+
+
+class Activate(View):
+    def get(self, request, activation_code):
+        ac = get_object_or_404(
+            ActivationCode.objects.select_related('user'),
+            code=activation_code, is_activated=False,
+        )
+
+        if ac.is_expired:
+            raise Http404
+
+        ac.is_activated = True
+        ac.save(update_fields=['is_activated'])
+
+        user = ac.user
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+        return redirect('index')
