@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, ListView, View
 from .models import User, Contact, ActivationCode
 from currency.models import Rate
-from account.forms import SignUpForm
+from account.forms import SignUpForm, SignUpFormCodeSMS
 
 class MyProfile(UpdateView):
     template_name = 'my_profile.html'
@@ -37,6 +37,13 @@ class SignUpView(CreateView):
     queryset = User.objects.all()
     success_url = reverse_lazy('index')
     form_class = SignUpForm
+
+
+class SignUpCodeSMSView(CreateView):
+    template_name = 'signupcodesms.html'
+    queryset = User.objects.all()
+    success_url = reverse_lazy('index')
+    form_class = SignUpFormCodeSMS
 
 
 class Activate(View):

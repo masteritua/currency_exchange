@@ -22,3 +22,16 @@ def send_activation_code_async(email_to, code):
         [email_to],
         fail_silently=False,
     )
+
+
+@shared_task()
+def send_activation_code_async_sms(email_to, code):
+    path = reverse('account:activate', args=(code, ))
+
+    send_mail(
+        'Your activation code SMS',
+        f'http://127.0.0.1:8001{path}',
+        'masteritua@gmail.com',
+        [email_to],
+        fail_silently=False,
+    )

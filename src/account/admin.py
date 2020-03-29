@@ -6,12 +6,12 @@ from django.dispatch import receiver
 
 @receiver(pre_save, sender=User)
 def pre_profile(sender, instance, **kwargs):
-    pass
-    # PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    #
-    # path = f'{PROJECT_ROOT}/media/avatar/'
-    # for file in os.scandir(path):
-    #     os.unlink(file.path)
+
+    PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    path = f'{PROJECT_ROOT}/media/avatar/'
+    for file in os.scandir(path):
+        os.unlink(file.path)
 
 
 class UserAdmin(admin.ModelAdmin):

@@ -40,3 +40,24 @@ class ActivationCode(models.Model):
     #     self.code = ... # GENERTE CODE
     #     super().save(*args, **kwargs)
 
+
+class ActivationCodeSMS(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activation_codes_sms')
+    created = models.DateTimeField(auto_now_add=True)
+    code = models.CharField(max_length=6)
+    is_activated = models.BooleanField(default=False)
+
+    @property
+    def is_expired(self):
+        now = datetime.now()
+        diff = now - self.created
+        return diff.days > 7
+
+    def send_activation_code(self, code):
+        send_activation_code_async_sms.delay(self.user.email, code)
+
+    def save(self, *args, **kwargs):
+        self.code = ... # GENERTE CODE
+        super().save(*args, **kwargs)
+

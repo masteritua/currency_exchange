@@ -10,4 +10,5 @@ urlpatterns = [
     path('latest-rates/', views.LatestRates.as_view(), name='latest-rates'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('activate/<uuid:activation_code>/', views.Activate.as_view(), name='activate'),
+    path('signup-activate-sms/', views.SignUpCodeSMSView.as_view(), name='signup-activate-sms'),
 ]
