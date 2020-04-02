@@ -1,10 +1,13 @@
-# from django.conf.urls import path
 from django.urls import path
 
-from currency.api.views import CurrenciesView
+from currency.api import views
 
 app_name = 'api-currency'
 
 urlpatterns = [
-    path(r'rates/', CurrenciesView.as_view(), name='rates'),
+    path('rates/', views.RatesView.as_view(), name='rates'),
+    path('rates/<int:pk>/', views.RateView.as_view(), name='rate'),
+    path('contacts/', views.ContactsView.as_view(), name='contacts'),
+    path('contacts/<int:pk>/', views.ContactsView.as_view(), name='contact'),
 ]
+# api/v1/currency/rates/

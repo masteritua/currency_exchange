@@ -35,3 +35,13 @@ def send_activation_code_async_sms(email_to, code):
         [email_to],
         fail_silently=False,
     )
+
+@shared_task()
+def send_create_api(email_to):
+
+    send_mail(
+        'Запись создана через АPI',
+        'masteritua@gmail.com',
+        'masteritua@gmail.com',
+        fail_silently=False,
+    )
