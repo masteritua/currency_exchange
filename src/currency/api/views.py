@@ -1,64 +1,31 @@
 from rest_framework import generics, response
-from currency.api.serializers import RateSerializer
+from currency.api.serializers import RateSerializer, ContactSerializer
 from currency.models import Rate
 from account.models import Contact
 from datetime import datetime
 from account.tasks import send_create_api
+from django_filters import rest_framework as filters
+
+class RatesFilter(filters.FilterSet):
+    created__gt = filters.DateTimeFilter(field_name="created", lookup_expr='gt')
+    created__gte = filters.DateTimeFilter(field_name="created", lookup_expr='gte')
+    created__lt = filters.DateTimeFilter(field_name="created", lookup_expr='lt')
+    created__lte = filters.DateTimeFilter(field_name="created", lookup_expr='lte')
+    created__exact = filters.DateTimeFilter(field_name="created", lookup_expr='exact')
+    created__range = filters.DateFromToRangeFilter(field_name="created", lookup_expr='range')
+    created__currency = filters.NumberFilter(field_name="created", lookup_expr='currency')
+    created__source = filters.NumberFilter(field_name="created", lookup_expr='source')
+
+    class Meta:
+        model = Rate
+        fields = ['id', 'created', 'currency', 'source']
 
 
 class RatesView(generics.ListCreateAPIView):
     queryset = Rate.objects
     serializer_class = RateSerializer
-
-    def list(self, request):
-
-        get = request.GET
-        string_query = ''
-
-        if get.get('created__lt'):
-
-            string_query = f"created__lt='{datetime.strptime(get.get('created__lt'), '%m/%d/%Y')}'"
-
-        elif get.get('created__lte'):
-
-            string_query = f"created__lte={datetime.strptime(get.get('created__lte'), '%m/%d/%Y')}"
-
-        elif get.get('created__exact'):
-
-            string_query = f"created__exact={datetime.strptime(get.get('created__exact'), '%m/%d/%Y')}"
-
-        elif get.get('created__gt'):
-
-            string_query = f"created__gt={datetime.strptime(get.get('created__gt'), '%m/%d/%Y')}"
-
-        elif get.get('created__gte'):
-
-            string_query = f"created__gte={datetime.strptime(get.get('created__gte'), '%m/%d/%Y')}"
-
-        elif get.get('created__range'):
-
-            string_query = f"created__gte={datetime.strptime(get.get('created__range'), '%m/%d/%Y')}"
-
-        elif get.get('currency__exact'):
-
-            string_query = f"currency__exact={get.get('currency__exact')}"
-
-        elif get.get('source__exact'):
-
-            string_query = f"source__exact={get.get('source__exact')}"
-
-
-        if string_query:
-
-            queryset = self.queryset.filter(string_query)
-
-        else:
-
-            queryset = self.queryset.all()
-
-        serializer = self.serializer_class(queryset, many=True)
-        return response.Response(serializer.data)
-
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = RatesFilter
 
 class RateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Rate.objects.all()
