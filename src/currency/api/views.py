@@ -31,19 +31,19 @@ class RateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RateSerializer
 
 
+class ContactFilter(filters.FilterSet):
+
+    class Meta:
+        model = Contact
+        fields = ['email', 'title', 'body', ]
+
 class ContactsView(generics.ListCreateAPIView):
     queryset = Contact.objects
     serializer_class = ContactSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ContactFilter
 
-    def list(self, request):
 
-        queryset = self.queryset.all()
-        serializer = self.serializer_class(queryset, many=True)
-        return response.Response(serializer.data)
-
-    def perform_create(self, serializer):
-        send_create_api.delay()
-
-class ContactsView(generics.RetrieveUpdateDestroyAPIView):
+class ContactView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer

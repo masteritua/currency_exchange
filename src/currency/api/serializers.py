@@ -32,8 +32,10 @@ class ContactSerializer(serializers.ModelSerializer):
             'body',
             'created',
         )
+
         extra_kwargs = {
-            'email': {'write_only': True},
-            'title': {'write_only': True},
+             'email': {'write_only': False},
+             'title': {'write_only': False},
+             'body': {'write_only': False},
         }
 
