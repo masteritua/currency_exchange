@@ -57,7 +57,7 @@ class ActivationCodeSMS(models.Model):
     def send_activation_code(self, code):
         send_activation_code_async_sms.delay(self.user.email, code)
 
-    def save(self, *args, **kwargs):
-        self.code = ... # GENERTE CODE
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.code = ... # GENERTE CODE
+    #     super().save(*args, **kwargs)
 

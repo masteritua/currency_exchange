@@ -1,4 +1,5 @@
 from celery import shared_task
+from common.functions import email
 
 
 @shared_task(bind=True)
@@ -33,15 +34,5 @@ def send_activation_code_async_sms(email_to, code):
         f'http://127.0.0.1:8001{path}',
         'masteritua@gmail.com',
         [email_to],
-        fail_silently=False,
-    )
-
-@shared_task()
-def send_create_api(email_to):
-
-    send_mail(
-        'Запись создана через АPI',
-        'masteritua@gmail.com',
-        'masteritua@gmail.com',
         fail_silently=False,
     )

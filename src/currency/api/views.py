@@ -3,7 +3,6 @@ from currency.api.serializers import RateSerializer, ContactSerializer
 from currency.models import Rate
 from account.models import Contact
 from datetime import datetime
-from account.tasks import send_create_api
 from django_filters import rest_framework as filters
 
 class RatesFilter(filters.FilterSet):

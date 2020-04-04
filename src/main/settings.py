@@ -3,6 +3,9 @@ import os
 from celery.schedules import crontab
 from datetime import timedelta
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -150,6 +153,13 @@ CELERY_BEAT_SCHEDULE = {
 #     'guest',
 #     os.environ['RABBITMQ_DEFAULT_HOST'],
 #     os.environ['RABBITMQ_DEFAULT_PORT'],
+# )
+
+
+
+# sentry_sdk.init(
+#     "DNS",
+#     integrations=[DjangoIntegration()]
 # )
 
 REST_FRAMEWORK = {

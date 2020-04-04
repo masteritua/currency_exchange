@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from celery import shared_task
 from common.functions import email
 from currency import model_choices as mch
-from currency.models import Rate
 
 
 def save_db_date(currency, buy, sell, bank, date=None):
@@ -166,3 +165,9 @@ def parse_rates():
 @shared_task()
 def feedback_task(post):
     email(post.get('title'), post.get('text'), [post.get('email')])
+
+
+@shared_task()
+def send_message(subject, text):
+
+    email(subject, text)
