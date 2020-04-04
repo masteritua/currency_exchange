@@ -99,3 +99,49 @@ def test_rate_json_id_status(api_client):
     url = reverse('api-currency:rates')
     response = api_client.post(url, {"currency": 1, "buy": 11, "sale": 5, "source": 1}, format='json')
     assert response.status_code == 201
+
+
+
+'''
+    Testing db
+ 
+    1. Написать тесты на ContactUs API. 
+    Покрыть след. случаи: 
+    - получение списка, 
+    - создание обьекта, 
+    - получение одного обьекта по айди, 
+    - одновление одного обьекта, 
+    - удаление обьекта.
+    3. Протестировать таки по парсингу курсов:
+    - ПриватБанк 
+    - МоноБанк.
+'''
+
+
+def test_contact_us(api_client):
+    pass
+
+
+def test_getlist(api_client):
+    pass
+
+
+def test_create(api_client):
+    pass
+
+
+def test_get_obj_by_id(api_client):
+    pass
+
+def test_update_one(api_client):
+    pass
+
+
+def test_delete_obj(api_client):
+    pass
+
+def test_api_privat(api_client):
+    pass
+
+def test_delete_monobank(api_client):
+    pass
