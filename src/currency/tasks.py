@@ -1,10 +1,10 @@
-
 from decimal import Decimal, ROUND_HALF_DOWN
 from bs4 import BeautifulSoup
 from celery import shared_task
-from common.functions import email
+from common.functions import email, save_db
 from currency import model_choices as mch
 
+import requests
 
 def save_db_date(currency, buy, sell, bank, date=None):
   buy_dec = Decimal(buy)
@@ -23,33 +23,6 @@ def save_db_date(currency, buy, sell, bank, date=None):
 
   new_rate = Rate(**rate_kwargs)
   new_rate.save()
-
-
-
-def save_db(currency, buy, sell, bank):
-    buy_dec = Decimal(buy)
-    buy = buy_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
-
-    sell_dec = Decimal(sell)
-    sell = sell_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
-
-    rate_kwargs = {
-        'currency': currency,
-        'buy': buy,
-        'sale': sell,
-        'source': bank,
-    }
-
-    # Rate.objects.create(**rate_kwargs)
-    new_rate = Rate(**rate_kwargs)
-    last_rate = Rate.objects.filter(currency=currency, source=bank).last()
-
-    # from pdb import set_trace
-    # set_trace()
-
-    # if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-    if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
-        new_rate.save()
 
 
 def _alfa():
@@ -80,18 +53,12 @@ def _privat():
     url = 'https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5'
     response = requests.get(url)
     r_json = response.json()
-    # print(r_json)
 
     for rate in r_json:
+
         if rate['ccy'] in {'USD', 'EUR'}:  # O(1) if we use list it would be O(n) ('USD', 'EUR')
             currency = mch.CURR_USD if rate['ccy'] == 'USD' else mch.CURR_EUR
-            # currency = {
-            #     'USD': mch.CURR_USD,
-            #     'EUR': mch.CURR_EUR,
-            # }[rate['ccy']]
-
-            save_db(currency, rate['buy'], rate['sale'], mch.SR_PRIVAT)
-
+            save_db(currency, rate['buy'], rate['sale'],  mch.SR_PRIVAT)
 
 def _aval():
     url = 'https://ex.aval.ua/ru/personal/everyday/exchange/'

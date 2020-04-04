@@ -214,7 +214,7 @@ SWAGGER_SETTINGS = {
     },
 }
 
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 # LOGGING = {
 #     'version': 1,

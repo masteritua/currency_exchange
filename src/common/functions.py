@@ -2,7 +2,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from smtplib import SMTPException
 from django.core.files import File
-
+from decimal import Decimal, ROUND_HALF_DOWN
+from currency.models import Rate
 
 def save_to_file(text):
     with open(settings.EMAIL_FILE_PATH_REPORT, 'w') as f:
@@ -31,3 +32,29 @@ def email(subject, message, recipient_list=None):
     except SMTPException as e:
 
         save_to_file(f'Ошибка отправки письма: {e}')
+
+
+def save_db(currency, buy, sell, bank):
+    buy_dec = Decimal(buy)
+    buy = buy_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+
+    sell_dec = Decimal(sell)
+    sell = sell_dec.quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+
+    rate_kwargs = {
+        'currency': currency,
+        'buy': buy,
+        'sale': sell,
+        'source': bank,
+    }
+
+    # Rate.objects.create(**rate_kwargs)
+    new_rate = Rate(**rate_kwargs)
+    last_rate = Rate.objects.filter(currency=currency, source=bank).last()
+
+    # from pdb import set_trace
+    # set_trace()
+
+    # if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
+    if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
+        new_rate.save()
