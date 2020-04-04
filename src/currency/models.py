@@ -18,4 +18,4 @@ class Rate(models.Model):
 
 @receiver(post_save, sender=Rate)
 def save_profile(sender, instance, **kwargs):
-	send_message("API", "Создание новой записи Rate")
+	send_message.delay("API", "Создание новой записи Rate")
