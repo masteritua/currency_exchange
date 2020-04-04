@@ -125,3 +125,5 @@ xdiagnose==3.8.4.1
 xkit==0.0.0
 XlsxWriter==0.7.3
 zipp==2.2.0
+pytest-django
+pytest-mock

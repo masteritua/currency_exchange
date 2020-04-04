@@ -13,8 +13,8 @@ class RatesFilter(filters.FilterSet):
     created__lte = filters.DateTimeFilter(field_name="created", lookup_expr='lte')
     created__exact = filters.DateTimeFilter(field_name="created", lookup_expr='exact')
     created__range = filters.DateFromToRangeFilter(field_name="created", lookup_expr='range')
-    created__currency = filters.NumberFilter(field_name="created", lookup_expr='currency')
-    created__source = filters.NumberFilter(field_name="created", lookup_expr='source')
+    currency__exact = filters.NumberFilter(field_name="currency", lookup_expr='exact')
+    source__exact = filters.NumberFilter(field_name="source", lookup_expr='exact')
 
     class Meta:
         model = Rate
