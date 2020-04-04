@@ -7,8 +7,9 @@ __pycache__/
 
 # C extensions
 *.so
-*.png
-*.jpg
+/src/static/**/*.jp?g
+/src/static/**/*.png
+
 # Distribution / packaging
 .Python
 build/
