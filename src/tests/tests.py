@@ -43,10 +43,6 @@ def test_get_rates(api_client, user):
     response = api_client.get(url)
     assert response.status_code == 200
 
-    # response = api_client.post(url, data={}, format='json')
-
-    # response = api_client.put(url + id, data={}, format='json')
-    # response = api_client.delete(url + id, data={}, format='json')
 
 
 class Response:

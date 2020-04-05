@@ -11,4 +11,10 @@ urlpatterns = [
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('activate/<uuid:activation_code>/', views.Activate.as_view(), name='activate'),
     path('signup-activate-sms/', views.SignUpCodeSMSView.as_view(), name='signup-activate-sms'),
+
+    path('about/', views.About.as_view(), name='about'),
+    path('experience/', views.Experience.as_view(), name='experience'),
+    path('education/', views.Education.as_view(), name='education'),
+    path('skills/', views.Skills.as_view(), name='skills'),
+    path('interests/', views.Interests.as_view(), name='interests'),
 ]

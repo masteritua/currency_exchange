@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from django.http import HttpResponse
 from django.views.generic import View
 from currency.models import Rate
+import csv
 
 # Create your views here.
 def test(self):

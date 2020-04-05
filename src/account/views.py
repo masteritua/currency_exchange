@@ -27,8 +27,7 @@ class ContactUs(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        print(self.object)
-        # send_email_async.delay()
+        send_email_async.delay()
         return response
 
 
@@ -63,3 +62,29 @@ class Activate(View):
         user.is_active = True
         user.save(update_fields=['is_active'])
         return redirect('index')
+
+
+class About(CreateView):
+    template_name = 'about.html'
+    queryset = Contact.objects.all()
+    fields = ('email', 'title', 'body')
+
+class Experience(CreateView):
+    template_name = 'experience.html'
+    queryset = Contact.objects.all()
+    fields = ('email', 'title', 'body')
+
+class Education(CreateView):
+    template_name = 'education.html'
+    queryset = Contact.objects.all()
+    fields = ('email', 'title', 'body')
+
+class Skills(CreateView):
+    template_name = 'skills.html'
+    queryset = Contact.objects.all()
+    fields = ('email', 'title', 'body')
+
+class Interests(CreateView):
+    template_name = 'interests.html'
+    queryset = Contact.objects.all()
+    fields = ('email', 'title', 'body')
