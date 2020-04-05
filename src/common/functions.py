@@ -52,9 +52,5 @@ def save_db(currency, buy, sell, bank):
     new_rate = Rate(**rate_kwargs)
     last_rate = Rate.objects.filter(currency=currency, source=bank).last()
 
-    # from pdb import set_trace
-    # set_trace()
-
-    # if last_rate and (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
     if last_rate is None or (new_rate.buy != last_rate.buy or new_rate.sale != last_rate.sale):
         new_rate.save()

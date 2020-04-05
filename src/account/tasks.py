@@ -1,5 +1,5 @@
 from celery import shared_task
-from common.functions import email
+from common.functions import email, send_message
 
 
 @shared_task(bind=True)
@@ -9,14 +9,14 @@ def debug_task(self):
 
 @shared_task()
 def send_email_async(subject, email, body):
-    send_email()
+    email(subject, body, None, email)
 
 
 @shared_task()
 def send_activation_code_async(email_to, code):
     path = reverse('account:activate', args=(code, ))
 
-    send_mail(
+    send_message(
         'Your activation code',
         f'http://127.0.0.1:8001{path}',
         'masteritua@gmail.com',
@@ -29,7 +29,7 @@ def send_activation_code_async(email_to, code):
 def send_activation_code_async_sms(email_to, code):
     path = reverse('account:activate', args=(code, ))
 
-    send_mail(
+    send_message(
         'Your activation code SMS',
         f'http://127.0.0.1:8001{path}',
         'masteritua@gmail.com',

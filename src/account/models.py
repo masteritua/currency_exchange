@@ -60,9 +60,11 @@ class ActivationCodeSMS(models.Model):
         diff = now - self.created
         return diff.days > 7
 
-    def send_activation_code(self, code):
-        send_activation_code_async_sms.delay(self.user.email, code)
+    def save(self, *args, **kwargs):
 
+        super().save(*args, **kwargs)
+
+        send_activation_code_async_sms.delay(self.user.email, self.user.code)
 
 @receiver(post_save, sender=Contact)
 def save_profile(sender, instance, **kwargs):

@@ -1,5 +1,4 @@
 from django import forms
-
 from account.models import User, ActivationCodeSMS
 
 
@@ -34,16 +33,15 @@ class SignUpForm(forms.ModelForm):
         # Save code SMS
         random_number = random(6)
 
-        ac = get_object_or_404(
-            ActivationCodeSMS.objects.select_related('user'),
-            is_activated=False,
-        )
+        try:
 
-        ac.save(code=random_number)
+            ac = ActivationCodeSMS.objects.select_related('user')
+            ac.is_activated = False
+            ac.code = random_number
+            ac.save()
 
-
-        # Send code to SMS
-        ActivationCodeSMS.send_activation_code(random_number)
+        except (RuntimeError, TypeError, NameError):
+            raise Exception("Request Error")
 
 
         return user
@@ -66,7 +64,7 @@ class SignUpFormCodeSMS(forms.ModelForm):
 
                 ac = get_object_or_404(
                     ActivationCodeSMS.objects.select_related('user'),
-                    is_activated=False,code=cleaned_data['email'],
+                    is_activated=False, code=cleaned_data['email'],
                 )
 
                 if not ac.code:
@@ -79,21 +77,15 @@ class SignUpFormCodeSMS(forms.ModelForm):
 
     def save(self, commit=True):
 
-        ac = get_object_or_404(
-            ActivationCodeSMS.objects.select_related('user'),
-            is_activated=False,
-        )
+        try:
 
-        if ac.is_expired:
-            raise Http404
+            ac = ActivationCodeSMS.objects.select_related('user')
+            ac.is_activated = True
+            ac.save(update_fields=['is_activated'])
 
-        ac.is_activated = True
-        ac.save(update_fields=['is_activated'])
+        except (RuntimeError, TypeError, NameError):
+            raise Exception("Request Error")
 
-        user = ac.user
-        user.is_active = True
-        user.save(update_fields=['is_active'])
-        return redirect('index')
 
         return redirect('index')
 
