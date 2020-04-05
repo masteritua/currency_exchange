@@ -43,11 +43,6 @@ def test_get_rates(api_client, user):
     response = api_client.get(url)
     assert response.status_code == 200
 
-    # response = api_client.post(url, data={}, format='json')
-
-    # response = api_client.put(url + id, data={}, format='json')
-    # response = api_client.delete(url + id, data={}, format='json')
-
 
 class Response:
     pass
@@ -107,18 +102,18 @@ def test_create(api_client):
 
 
 def test_get_obj_by_id(api_client):
-    url = "/api/v1/currency/contact/1"
+    url = reverse('api-currency:contact', args=(1,))
     response = api_client.get(url, {}, format='json')
     assert response.json()['id'] == 1
 
 def test_update_one(api_client):
-    url = "/api/v1/currency/contact/1"
+    url = reverse('api-currency:contact', args=(1,))
     response = api_client.patch(url, {"email": "test@test.com"}, format='json')
     assert 'test@test.com' == response.json()['email']
 
 
 def test_delete_obj(api_client):
-    url = "/api/v1/currency/contact/1"
+    url = reverse('api-currency:contact', args=(1,))
     api_client.delete(url)
     response=api_client.get(url)
     assert response.json()['detail'] == 'Not found.'
