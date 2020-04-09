@@ -4,6 +4,7 @@ from currency.models import Rate
 from account.models import Contact
 from datetime import datetime
 from django_filters import rest_framework as filters
+from rest_framework.pagination import PageNumberPagination
 
 class RatesFilter(filters.FilterSet):
     created__gt = filters.DateTimeFilter(field_name="created", lookup_expr='gt')
@@ -18,6 +19,12 @@ class RatesFilter(filters.FilterSet):
     class Meta:
         model = Rate
         fields = ['id', 'created', 'currency', 'source']
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class RatesView(generics.ListCreateAPIView):
@@ -42,6 +49,7 @@ class ContactsView(generics.ListCreateAPIView):
     serializer_class = ContactSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ContactFilter
+    pagination_class = StandardResultsSetPagination
 
 
 class ContactView(generics.RetrieveUpdateDestroyAPIView):

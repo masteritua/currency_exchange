@@ -22,6 +22,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
+    'compressor',
 
     # 3rd party
     'django_extensions',
@@ -40,6 +43,12 @@ INSTALLED_APPS = [
     'currency',
     'feedback',
 ]
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -110,12 +119,12 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = COMPRESS_ROOT = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -171,7 +180,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PERMISSION_CLASSES': [
         #'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2
 }
 
 REST_USE_JWT = True
@@ -229,6 +240,8 @@ APPEND_SLASH = True
 #         'level': 'WARNING',
 #     },
 # }
+
+
 
 
 try:
