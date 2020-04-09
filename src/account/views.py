@@ -35,14 +35,14 @@ class ContactUs(CreateView):
 class SignUpView(CreateView):
     template_name = 'signup.html'
     queryset = User.objects.all()
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('home')
     form_class = SignUpForm
 
 
 class SignUpCodeSMSView(CreateView):
     template_name = 'signupcodesms.html'
     queryset = User.objects.all()
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('home')
     form_class = SignUpFormCodeSMS
 
 
@@ -62,4 +62,4 @@ class Activate(View):
         user = ac.user
         user.is_active = True
         user.save(update_fields=['is_active'])
-        return redirect('index')
+        return redirect('home')

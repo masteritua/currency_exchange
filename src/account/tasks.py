@@ -1,6 +1,6 @@
 from celery import shared_task
-from common.functions import email, send_message
-
+from django.core.mail import send_mail
+from common.functions import email
 
 @shared_task(bind=True)
 def debug_task(self):
@@ -16,7 +16,7 @@ def send_email_async(subject, email, body):
 def send_activation_code_async(email_to, code):
     path = reverse('account:activate', args=(code, ))
 
-    send_message(
+    send_mail(
         'Your activation code',
         f'http://127.0.0.1:8001{path}',
         'masteritua@gmail.com',
@@ -29,7 +29,7 @@ def send_activation_code_async(email_to, code):
 def send_activation_code_async_sms(email_to, code):
     path = reverse('account:activate', args=(code, ))
 
-    send_message(
+    send_mail(
         'Your activation code SMS',
         f'http://127.0.0.1:8001{path}',
         'masteritua@gmail.com',

@@ -28,21 +28,8 @@ class SignUpForm(forms.ModelForm):
         activation_code = user.activation_codes.create()
         activation_code.send_activation_code()
 
-
-
-        # Save code SMS
-        random_number = random(6)
-
-        try:
-
-            ac = ActivationCodeSMS.objects.select_related('user')
-            ac.is_activated = False
-            ac.code = random_number
-            ac.save()
-
-        except (RuntimeError, TypeError, NameError):
-            raise Exception("Request Error")
-
+        activation_code_sms = user.activation_codes_sms.create()
+        activation_code_sms.send_activation_code_sms()
 
         return user
 
@@ -52,7 +39,8 @@ class SignUpFormCodeSMS(forms.ModelForm):
 
     class Meta:
         model = ActivationCodeSMS
-        fields = ('code',)
+        fields = ('code', 'email')
+
 
     def clean(self):
 
@@ -60,34 +48,29 @@ class SignUpFormCodeSMS(forms.ModelForm):
 
         if not self.errors:
 
-            if cleaned_data['code']:
+            user = User.objects.filter(email=cleaned_data['email']).last()
 
-                ac = get_object_or_404(
-                    ActivationCodeSMS.objects.select_related('user'),
-                    is_activated=False, code=cleaned_data['email'],
-                )
+            if not user:
+                raise forms.ValidationError('Такого email не существует!')
 
-                if not ac.code:
-                    raise forms.ValidationError('Code do not match!')
+            sms = ActivationCodeSMS.objects.filter(user=user.id, code=cleaned_data['code'], is_activated=False).last()
 
-            if cleaned_data['email']:
-                raise forms.ValidationError('Email do not match!')
+            if not sms:
+                raise forms.ValidationError('Код неверный или уже активирован!')
 
         return cleaned_data
 
     def save(self, commit=True):
 
-        try:
+        cleaned_data = super().clean()
 
-            ac = ActivationCodeSMS.objects.select_related('user')
-            ac.is_activated = True
-            ac.save(update_fields=['is_activated'])
+        user = User.objects.filter(email=cleaned_data['email']).last()
+        user.is_active = True
+        user.save(update_fields=['is_active'])
 
-        except (RuntimeError, TypeError, NameError):
-            raise Exception("Request Error")
+        sms = ActivationCodeSMS.objects.filter(user=user.id, code=cleaned_data['code']).last()
+        sms.is_activated = True
+        sms.save(update_fields=['is_activated'])
 
-
-        return redirect('index')
-
-
+        return sms
 

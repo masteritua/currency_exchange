@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from currency.tasks import send_message
 from account.tasks import send_activation_code_async
+import random
 
 def avatar_path(instance, filename):
     m = 1
@@ -29,7 +30,6 @@ class Contact(models.Model):
 class ActivationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activation_codes')
     created = models.DateTimeField(auto_now_add=True)
-    # code = models.CharField(max_length=128)
     code = models.UUIDField(default=uuid4, editable=False, unique=True)
     is_activated = models.BooleanField(default=False)
 
@@ -42,9 +42,9 @@ class ActivationCode(models.Model):
     def send_activation_code(self):
         send_activation_code_async.delay(self.user.email, self.code)
 
-    # def save(self, *args, **kwargs):
-    #     self.code = ... # GENERTE CODE
-    #     super().save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 class ActivationCodeSMS(models.Model):
@@ -60,11 +60,14 @@ class ActivationCodeSMS(models.Model):
         diff = now - self.created
         return diff.days > 7
 
-    def save(self, *args, **kwargs):
+    def send_activation_code(self):
+        send_activation_code_async.delay(self.user.email, self.code)
 
+
+    def save(self, *args, **kwargs):
+        self.code = random.randrange(1, 10**6)
         super().save(*args, **kwargs)
 
-        send_activation_code_async_sms.delay(self.user.email, self.user.code)
 
 @receiver(post_save, sender=Contact)
 def save_profile(sender, instance, **kwargs):
