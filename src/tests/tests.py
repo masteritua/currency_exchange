@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from currency.tasks import _privat, _mono
 from account.models import User
+from currency.models import Rate
 from django.core import mail
 from account.tasks import send_activation_code_async
 from uuid import uuid4
@@ -84,6 +85,8 @@ def test_rate_json_id_status(api_client):
     response = api_client.post(url, {"currency": 1, "buy": 11, "sale": 5, "source": 1}, format='json')
     assert response.status_code == 201
 
+#=============TEST CONTACTUS==========================
+
 def test_getlist(api_client):
 
     url = reverse('api-currency:contacts')
@@ -118,7 +121,9 @@ def test_delete_obj(api_client):
     response=api_client.get(url)
     assert response.json()['detail'] == 'Not found.'
 
+#=============/TEST CONTACTUS==========================
 
+#=============TEST PRIVATBANK==========================
 def test_privat(mocker):
 
     def mock():
@@ -142,7 +147,9 @@ def test_privat(mocker):
 
     _privat()
 
+    assert len(Rate.objects.all()) == 4
 
+#=============TEST MONOBANK==========================
 def test_monobank(mocker):
 
     def mock():
@@ -167,3 +174,5 @@ def test_monobank(mocker):
     requests_get_patcher.return_value = mock()
 
     _mono()
+
+    assert len(Rate.objects.all()) == 4
