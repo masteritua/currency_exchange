@@ -10,7 +10,7 @@ cffi==1.14.0
 chardet==3.0.4
 Currency==0.1.2
 decorator==4.4.1
-Django==2.2.10
+Django==2.2.20
 django-celery-beat==1.6.0
 django-debug-toolbar==2.2
 django-extensions==2.2.8
