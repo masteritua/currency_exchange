@@ -12,7 +12,7 @@ Currency==0.1.2
 decorator==4.4.1
 Django==2.2.10
 django-celery-beat==1.6.0
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 django-extensions==2.2.8
 django-shell-plus==1.1.7
 django-six==1.0.4
